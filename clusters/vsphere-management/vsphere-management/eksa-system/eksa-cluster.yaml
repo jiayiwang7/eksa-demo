@@ -1,0 +1,136 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  name: vsphere-management
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: 195.16.100.191
+    machineGroupRef:
+      kind: VSphereMachineConfig
+      name: vsphere-management-cp
+  datacenterRef:
+    kind: VSphereDatacenterConfig
+    name: vsphere-management
+  externalEtcdConfiguration:
+    count: 3
+    machineGroupRef:
+      kind: VSphereMachineConfig
+      name: vsphere-management-etcd
+  gitOpsRef:
+    kind: FluxConfig
+    name: vsphere-flux
+  kubernetesVersion: "1.21"
+  managementCluster:
+    name: vsphere-management
+  workerNodeGroupConfigurations:
+  - count: 2
+    machineGroupRef:
+      kind: VSphereMachineConfig
+      name: vsphere-management
+    name: md-0
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereDatacenterConfig
+metadata:
+  name: vsphere-management
+  namespace: default
+spec:
+  datacenter: SDDC-Datacenter
+  insecure: false
+  network: /SDDC-Datacenter/network/sddc-cgw-network-4
+  server: vcenter.sddc-44-239-186-141.vmwarevmc.com
+  thumbprint: ""
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/control-plane: "true"
+  name: vsphere-management-cp
+  namespace: default
+spec:
+  datastore: /SDDC-Datacenter/datastore/WorkloadDatastore
+  diskGiB: 25
+  folder: /SDDC-Datacenter/vm/capv/eksa-demo
+  memoryMiB: 4096
+  numCPUs: 3
+  osFamily: ubuntu
+  resourcePool: /SDDC-Datacenter/host/Cluster-1/Resources/Compute-ResourcePool
+  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.21.12-kubernetes-1-21-eks-14-amd64-07d0549
+  users:
+  - name: capv
+    sshAuthorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoIw3x2zkgGxhXOHAEQO/evoWxxwPE3PxMLHOAKwADKER7cwMZBCU9GVW1RrvhywSVEqxzU4OS3oQxbXt0s98dXMxC3zC8OKBiz/WUoK2AI7nmzyqGwcqUxOCPayXbk+JUa6PNbTONc7RlNJqPaxlK9JZ5KPZzch9ZpQzC8/CKYL3KQGkvgC8YH2n+ayKoyGlEuLaNH8mgVEiVZbNroKzkfUbyRfDyvzf5WRU653vWvpR5D++aOSeOvf8XIeEACh9s1hR+o9qJUi8kCM7aInKpVCm1De3+7XVyWRPLciuaL+7Cpfe3yucCw3/Uti0utf4YRqXmEhQILAK2J21W4zDd
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/etcd: "true"
+  name: vsphere-management-etcd
+  namespace: default
+spec:
+  datastore: /SDDC-Datacenter/datastore/WorkloadDatastore
+  diskGiB: 25
+  folder: /SDDC-Datacenter/vm/capv/eksa-demo
+  memoryMiB: 8192
+  numCPUs: 3
+  osFamily: ubuntu
+  resourcePool: /SDDC-Datacenter/host/Cluster-1/Resources/Compute-ResourcePool
+  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.21.12-kubernetes-1-21-eks-14-amd64-07d0549
+  users:
+  - name: capv
+    sshAuthorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoIw3x2zkgGxhXOHAEQO/evoWxxwPE3PxMLHOAKwADKER7cwMZBCU9GVW1RrvhywSVEqxzU4OS3oQxbXt0s98dXMxC3zC8OKBiz/WUoK2AI7nmzyqGwcqUxOCPayXbk+JUa6PNbTONc7RlNJqPaxlK9JZ5KPZzch9ZpQzC8/CKYL3KQGkvgC8YH2n+ayKoyGlEuLaNH8mgVEiVZbNroKzkfUbyRfDyvzf5WRU653vWvpR5D++aOSeOvf8XIeEACh9s1hR+o9qJUi8kCM7aInKpVCm1De3+7XVyWRPLciuaL+7Cpfe3yucCw3/Uti0utf4YRqXmEhQILAK2J21W4zDd
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: VSphereMachineConfig
+metadata:
+  name: vsphere-management
+  namespace: default
+spec:
+  datastore: /SDDC-Datacenter/datastore/WorkloadDatastore
+  diskGiB: 25
+  folder: /SDDC-Datacenter/vm/capv/eksa-demo
+  memoryMiB: 4096
+  numCPUs: 3
+  osFamily: ubuntu
+  resourcePool: /SDDC-Datacenter/host/Cluster-1/Resources/Compute-ResourcePool
+  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.21.12-kubernetes-1-21-eks-14-amd64-07d0549
+  users:
+  - name: capv
+    sshAuthorizedKeys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDoIw3x2zkgGxhXOHAEQO/evoWxxwPE3PxMLHOAKwADKER7cwMZBCU9GVW1RrvhywSVEqxzU4OS3oQxbXt0s98dXMxC3zC8OKBiz/WUoK2AI7nmzyqGwcqUxOCPayXbk+JUa6PNbTONc7RlNJqPaxlK9JZ5KPZzch9ZpQzC8/CKYL3KQGkvgC8YH2n+ayKoyGlEuLaNH8mgVEiVZbNroKzkfUbyRfDyvzf5WRU653vWvpR5D++aOSeOvf8XIeEACh9s1hR+o9qJUi8kCM7aInKpVCm1De3+7XVyWRPLciuaL+7Cpfe3yucCw3/Uti0utf4YRqXmEhQILAK2J21W4zDd
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: FluxConfig
+metadata:
+  name: vsphere-flux
+  namespace: default
+spec:
+  branch: main
+  clusterConfigPath: clusters/vsphere-management
+  github:
+    owner: jiayiwang7
+    personal: true
+    repository: eksa-demo
+  systemNamespace: flux-system
+
+---
