@@ -16,7 +16,7 @@ spec:
       cidrBlocks:
       - 10.96.0.0/12
   controlPlaneConfiguration:
-    count: 1
+    count: 3
     endpoint:
       host: 195.16.100.192
     machineGroupRef:
@@ -33,11 +33,11 @@ spec:
   gitOpsRef:
     kind: FluxConfig
     name: vsphere-workload-flux
-  kubernetesVersion: "1.21"
+  kubernetesVersion: "1.22"
   managementCluster:
     name: vsphere-management
   workerNodeGroupConfigurations:
-  - count: 1
+  - count: 3
     machineGroupRef:
       kind: VSphereMachineConfig
       name: vsphere-workload-1
@@ -73,7 +73,7 @@ spec:
   numCPUs: 3
   osFamily: ubuntu
   resourcePool: /SDDC-Datacenter/host/Cluster-1/Resources/Compute-ResourcePool
-  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.21.12-kubernetes-1-21-eks-14-amd64-07d0549
+  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.22.9-kubernetes-1-22-eks-7-amd64-a51760a
   users:
   - name: capv
     sshAuthorizedKeys:
@@ -96,7 +96,7 @@ spec:
   numCPUs: 3
   osFamily: ubuntu
   resourcePool: /SDDC-Datacenter/host/Cluster-1/Resources/Compute-ResourcePool
-  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.21.12-kubernetes-1-21-eks-14-amd64-07d0549
+  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.22.9-kubernetes-1-22-eks-7-amd64-a51760a
   users:
   - name: capv
     sshAuthorizedKeys:
@@ -118,7 +118,7 @@ spec:
   numCPUs: 3
   osFamily: ubuntu
   resourcePool: /SDDC-Datacenter/host/Cluster-1/Resources/Compute-ResourcePool
-  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.21.12-kubernetes-1-21-eks-14-amd64-07d0549
+  template: /SDDC-Datacenter/vm/Templates/ubuntu-v1.22.9-kubernetes-1-22-eks-7-amd64-a51760a
   users:
   - name: capv
     sshAuthorizedKeys:
