@@ -1,0 +1,88 @@
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: Cluster
+metadata:
+  name: snow-management
+  namespace: default
+spec:
+  clusterNetwork:
+    cniConfig:
+      cilium: {}
+    pods:
+      cidrBlocks:
+      - 10.1.0.0/16
+    services:
+      cidrBlocks:
+      - 10.96.0.0/12
+  controlPlaneConfiguration:
+    count: 1
+    endpoint:
+      host: 192.168.1.110
+    machineGroupRef:
+      kind: SnowMachineConfig
+      name: snow-management-cp
+  datacenterRef:
+    kind: SnowDatacenterConfig
+    name: snow-management
+  gitOpsRef:
+    kind: FluxConfig
+    name: snow-management
+  kubernetesVersion: "1.21"
+  managementCluster:
+    name: snow-management
+  workerNodeGroupConfigurations:
+  - count: 1
+    machineGroupRef:
+      kind: SnowMachineConfig
+      name: snow-management
+    name: md-0
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: SnowDatacenterConfig
+metadata:
+  name: snow-management
+  namespace: default
+spec: {}
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: SnowMachineConfig
+metadata:
+  annotations:
+    anywhere.eks.amazonaws.com/control-plane: "true"
+  name: snow-management-cp
+  namespace: default
+spec:
+  amiID: s.ami-eks-d-v1-21-5-ubuntu-ami-2022-03-18
+  instanceType: sbe-c.large
+  physicalNetworkConnector: SFP_PLUS
+  sshKeyName: default
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: SnowMachineConfig
+metadata:
+  name: snow-management
+  namespace: default
+spec:
+  amiID: s.ami-eks-d-v1-21-5-ubuntu-ami-2022-03-18
+  instanceType: sbe-c.large
+  physicalNetworkConnector: SFP_PLUS
+  sshKeyName: default
+
+---
+apiVersion: anywhere.eks.amazonaws.com/v1alpha1
+kind: FluxConfig
+metadata:
+  name: snow-management
+  namespace: default
+spec:
+  branch: main
+  clusterConfigPath: clusters/snow-management
+  github:
+    owner: jiayiwang7
+    personal: true
+    repository: eksa-demo
+  systemNamespace: flux-system
+
+---
